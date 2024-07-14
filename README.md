@@ -33,6 +33,11 @@ Explore the full potential of your applications with OpenXpress. [Get Started No
 
 OpenXpress is a powerful and flexible application for managing and deploying your projects with ease. 
 
+Requirement
+```
+cargo version:  1.79.0 (ffa9cf99a 2024-06-03)
+```
+
 ## How to Deploy and Run OpenXpress Client in Rust Language Code
 
 To get started with running the OpenXpress Rust project, follow these steps:
