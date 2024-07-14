@@ -33,6 +33,11 @@ Explore the full potential of your applications with OpenXpress. [Get Started No
 
 OpenXpress is a powerful and flexible application for managing and deploying your projects with ease. 
 
+Requirement
+```
+cargo version:  1.79.0 (ffa9cf99a 2024-06-03)
+```
+
 ## How to Deploy and Run OpenXpress Client in Rust Language Code
 
 To get started with running the OpenXpress Rust project, follow these steps:
@@ -50,18 +55,15 @@ To get started with running the OpenXpress Rust project, follow these steps:
     cargo build
     cargo run
     ```
-
-For more examples and details, you can visit the [OpenXpress GitHub repository](https://github.com/adamendvy89/openxpress).
-
 ## How to Use the OpenXpress Client App
 
 Follow these instructions to download, extract, and run the OpenXpress builder app:
 1. **Register to OpenXpress Website**:
-   - Get `Username` and `Password` for login from [the official site](https://openxpress.cloud/register).
+   - Get `Username` and `Password` for login from [Register Page](https://openxpress.cloud/register).
    - This credential will used for openxpress client app.
      
 2. **Download and extract the OpenXpress package**:
-   - Ensure you have downloaded the latest OpenXpress package from [the official site](https://openxpress.cloud/download).
+   - Ensure you have downloaded the latest OpenXpress package from [Download Page](https://openxpress.cloud/download).
    - Extract the package to a directory of your choice.
 
 3. **Open a command prompt and navigate to the extracted directory**:
@@ -93,6 +95,9 @@ simple-php-master/
 ├── Dockerfile
 └── src/
     ├── index.php
+    ├── webhook.php
+    ├── logs/
+    │   └── webhook.log
     ├── config/
     │   └── config.php
     └── public/
@@ -102,14 +107,41 @@ simple-php-master/
 
 Example code for **Dockerfile**
 ```
-FROM php:7.1-apache
+# Use the official PHP image with Apache
+FROM php:8.0-apache
 
-RUN docker-php-ext-install mysqli
+# Copy custom php.ini file to the container
+COPY php.ini /usr/local/etc/php/php.ini
+
+# Copy the PHP script into the container
 COPY src/ /var/www/html/
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Enable Apache modules if needed
+RUN a2enmod rewrite
+
+# Restart Apache to apply changes
+RUN service apache2 restart
 
 ```
 
+## How to Use Webhook Logger
 
+Example code for webhook logger is on [**simple-php-master.zip**](https://github.com/adamendvy89/openxpress/blob/master/examples/simple-php-master.zip)
 
+Send HTTP Request to URL:
+```
+https://<Your uniqid>.openxpress.cloud/webhook.php
+```
+See webhook Log with URL:
+```
+https://<Your uniqid>.openxpress.cloud/logs/webhook.log
+```
+
+## API Documentation
+
+For more examples and features, you can visit the [OpenXpress API Docs](https://api.openxpress.cloud/api/docs/).
 
 
