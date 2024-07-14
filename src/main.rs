@@ -3,6 +3,7 @@ use reqwest::multipart;
 use std::fs::File;
 use std::io::Read;
 use serde_json::Value;
+use colored::*;
 
 const API_URL: &str = "https://api.openxpress.cloud";
 
@@ -51,12 +52,42 @@ async fn main() {
         Ok(token) => {
             match upload_zip(file, &token).await {
                 Ok(response) => {
-                    // Extract the file_url from the response
                     let file_url: String = extract_file_url(&response).expect("Failed to extract file URL");
 
-                    // Configure the Docker container
                     match configure_docker(&file_url, ports, &token).await {
-                        Ok(response) => println!("Docker configured: {}", response),
+                        Ok(config_response) => {
+                            let json_response: serde_json::Value = serde_json::from_str(&config_response)
+                                .expect("Failed to parse JSON response");
+
+                            let message = json_response["message"].as_str().unwrap_or("Unknown message");
+
+                            println!("OpenXpress by @adamendvy\n");
+                            println!("Message:\n{}", message.bright_cyan());
+
+                            println!("\nDocker Port         Online Url");
+
+                            // Check if 'unique_ports' exists and handle accordingly
+                            if let Some(unique_ports) = json_response["unique_ports"].as_object() {
+                                // Handle single port case
+                                for (port, url) in unique_ports {
+                                    let res = format!("{:<21}        https://{}", port, url);
+                                    println!("{}", remove_quotes(&res));
+                                }
+                            } else if let Some(unique_ports) = json_response["unique_ports"].as_array() {
+                                // Handle multiple ports case
+                                for item in unique_ports {
+                                    if let Some(port) = item["port"].as_str() {
+                                        if let Some(url) = item["url"].as_str() {
+                                            let res = format!("{:<21}        https://{}", port, url);
+                                            println!("{}", remove_quotes(&res));
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Handle case where 'unique_ports' is not returned
+                                println!("No 'unique_ports' found in JSON response");
+                            }
+                        },
                         Err(e) => eprintln!("Error configuring Docker: {}", e),
                     }
                 },
@@ -65,6 +96,10 @@ async fn main() {
         },
         Err(e) => eprintln!("Error logging in: {}", e),
     }
+}
+
+fn remove_quotes(input: &str) -> String {
+    input.trim_matches('"').replace("//\"", "//").replace("url_port_", "").to_string()
 }
 
 async fn login(username: &str, password: &str) -> Result<String, Box<dyn std::error::Error>> {
