@@ -50,9 +50,6 @@ To get started with running the OpenXpress Rust project, follow these steps:
     cargo build
     cargo run
     ```
-
-For more examples and details, you can visit the [OpenXpress GitHub repository](https://github.com/adamendvy89/openxpress).
-
 ## How to Use the OpenXpress Client App
 
 Follow these instructions to download, extract, and run the OpenXpress builder app:
@@ -138,5 +135,8 @@ See webhook Log with URL:
 https://<Your uniqid>.openxpress.cloud/logs/webhook.log
 ```
 
+## API Documentation
+
+For more examples and features, you can visit the [OpenXpress API Docs](https://api.openxpress.cloud/api/docs/).
 
 
